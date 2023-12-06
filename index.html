@@ -43,6 +43,8 @@
             },
             completadoEstado(item){
               item.completado=!item.completado
+              localStorage.setItem('items', JSON.stringify(this.items));
+              this.updatePendientes();
             },
             borrarCompletadas(){
               // Filtra las tareas no completadas y actualiza el arreglo
@@ -60,7 +62,13 @@
               if (index !== -1) {
                 this.items.splice(index, 1);
                 localStorage.setItem('items', JSON.stringify(this.items));
+                this.cantidad = this.items.length;
+                this.updatePendientes();
               }
+            },
+            updatePendientes() {
+              // Recalcular las tareas pendientes
+              this.pendientes = this.items.filter(item => !item.completado).length;
             },
             cancelarBorrado(item){
               item.borrando=false;
@@ -113,6 +121,10 @@
               if (storedItems) {
                 this.items = JSON.parse(storedItems);
                 this.cantidad = this.items.length;
+                this.updatePendientes();
+                this.items.forEach(item => {
+                item.tiempoTranscurrido = this.calcularTiempoTranscurrido(item.fecha);
+              });
               }
             },
             getClassByPrioridad(num,item){
@@ -157,7 +169,7 @@
     <input type="text" v-if="filtrarActivado" v-model="textoFiltrado">
     <ul>
       <li class="listaItems" v-for="item in filtrar" :key="item.fecha" :class="{ 'nueva-nota': item.nuevaNota }">
-        <p :class="estaCompletado(item.completado)" class="tarea"  v-if="!item.editando"><input @click="completadoEstado(item)" type="checkbox">{{ item.texto }}</p>
+        <p :class="estaCompletado(item.completado)" class="tarea"  v-if="!item.editando"><input @click="completadoEstado(item)" type="checkbox" v-bind:checked="item.completado">{{ item.texto }}</p>
         <p v-else>
           <input v-model="item.texto" type="text">
           <button class="botonImg" @click="confirmarEdicion(item)">Confirmar</button>
