@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="./style.css">
+    <script>
+        window.onload=()=>{
+          const app = Vue.createApp({
+          data() {
+            return {
+              nuevoItem: '',
+              items: [],
+              cantidad:0,
+              filtrarActivado:false,
+              textoFiltrado:''
+            };
+          },
+          methods: {
+            calcularTiempoTranscurrido(fecha) {
+              const ahora = new Date();
+              const fechaCreacion = new Date(fecha);
+              const diferencia = ahora - fechaCreacion;
+
+              const segundos = Math.floor(diferencia / 1000);
+              const minutos = Math.floor(segundos / 60);
+              const horas = Math.floor(minutos / 60);
+              const dias = Math.floor(horas / 24);
+
+              if (dias > 0) {
+                return `hace ${dias} día(s), ${horas % 24} hora(s), ${minutos % 60} minuto(s)`;
+              } else if (horas > 0) {
+                return `hace ${horas} hora(s), ${minutos % 60} minuto(s)`;
+              } else {
+                return `hace ${minutos} minuto(s)`;
+              }
+            },
+            estaCompletado(item){
+              if(item){
+                return 'completado'
+              }
+            },
+            completadoEstado(item){
+              item.completado=!item.completado
+            },
+            borrarCompletadas(){
+              // Filtra las tareas no completadas y actualiza el arreglo
+              this.items = this.items.filter(item => !item.completado);
+
+              // Actualiza la cantidad
+              this.cantidad = this.items.length;
+
+              // Guarda el estado actualizado en el localStorage
+              localStorage.setItem('items', JSON.stringify(this.items));
+            },
+            confirmarBorrado(item) {
+              // Eliminar el item y guardar los cambios
+              const index = this.items.indexOf(item);
+              if (index !== -1) {
+                this.items.splice(index, 1);
+                localStorage.setItem('items', JSON.stringify(this.items));
+              }
+            },
+            cancelarBorrado(item){
+              item.borrando=false;
+            },
+            iniciarBorrado(item) {
+              // Establecer el estado de borrado en verdadero
+              item.borrando = true;
+              console.log(item)
+            },
+
+            iniciarEdicion(item) {
+              // Establecer el estado de edición en verdadero
+              item.editando = true;
+            },
+            confirmarEdicion(item) {
+              // Establecer el estado de edición en falso y guardar los cambios
+              item.editando = false;
+              localStorage.setItem('items', JSON.stringify(this.items));
+            },
+
+            ordenarPorPrioridad(items) {
+            return items.sort((a, b) => a.prioridad - b.prioridad);
+            },
+            CambiarPrioridad(nuevaPrioridad,item){
+              item.prioridad=parseInt(nuevaPrioridad);
+              localStorage.setItem('items', JSON.stringify(this.items));
+            },
+            agregarItem() {
+              if (this.nuevoItem.trim() !== '') {
+                this.items.push({
+                  texto:this.nuevoItem,
+                  prioridad:2,
+                  fecha: Date.now(),
+                  completada:false,
+                  editando: false,
+                  borrando: false,
+                  completado: false,
+                  nuevaNota:true
+                });
+                this.nuevoItem = '';
+                this.cantidad=this.items.length;
+                localStorage.setItem('items', JSON.stringify(this.items));
+                setTimeout(() => {
+                  newItem.nuevaNota = false;
+                }, 2000);
+             }
+            },
+            cargarItemsDesdeLocalStorage() {
+              const storedItems = localStorage.getItem('items');
+              if (storedItems) {
+                this.items = JSON.parse(storedItems);
+                this.cantidad = this.items.length;
+              }
+            },
+            getClassByPrioridad(num,item){
+              if(num==item){
+                return 'marcado'
+              }else{
+                return 'botonPrio'
+              }
+              
+            },
+          },
+
+          computed:{
+            pendientes() {
+              // Filtra las tareas completadas y resta esa cantidad al total
+              return this.items.filter(item => !item.completado).length;
+            },
+            filtrar() {
+              const itemsFiltrados = !this.filtrarActivado
+                ? this.ordenarPorPrioridad(this.items)
+                : this.ordenarPorPrioridad(this.items.filter(item => item.texto.toLowerCase().includes(this.textoFiltrado.toLowerCase())));
+
+              // No es necesario agregar información adicional aquí, simplemente devuelve el array filtrado
+              return itemsFiltrados;
+            },
+          },
+          mounted() {
+            this.cargarItemsDesdeLocalStorage();
+          }
+        }).mount('#app');
+
+        }
+    </script>
+</head>
+<body>
+  <div id="app">
+    <H1>AGENDA</H1>
+    <p>Tienes {{pendientes}} tareas pendientes de un total de {{cantidad}} tareas. <button @click="borrarCompletadas" class="borrarTodo">Click aqui</button> para borrarlos completadas.</p>
+    <input v-model="nuevoItem" type="text" placeholder="Escribe algo" @keyup.enter="agregarItem">
+    <label for="checkbox"> Filtrar</label>
+    <input type="checkbox" v-model="filtrarActivado">
+    <input type="text" v-if="filtrarActivado" v-model="textoFiltrado">
+    <ul>
+      <li class="listaItems" v-for="item in filtrar" :key="item.fecha" :class="{ 'nueva-nota': item.nuevaNota }">
+        <p :class="estaCompletado(item.completado)" class="tarea"  v-if="!item.editando"><input @click="completadoEstado(item)" type="checkbox">{{ item.texto }}</p>
+        <p v-else>
+          <input v-model="item.texto" type="text">
+          <button class="botonImg" @click="confirmarEdicion(item)">Confirmar</button>
+        </p>
+        
+        <div class="botonesPrioridad">
+          <span class="titulin">Prioridad:</span>
+          <button :class="getClassByPrioridad(3,item.prioridad)" class="baja" @click="CambiarPrioridad(3,item)"> Baja </button>
+          <button :class="getClassByPrioridad(2,item.prioridad)"  class="media" @click="CambiarPrioridad(2,item)"> Media </button>
+          <button :class="getClassByPrioridad(1,item.prioridad)"  class="alta" @click="CambiarPrioridad(1,item)"> Alta </button>
+        </div>
+        <div class="BotonesEditarBorrar">
+          <div>
+            <button class="botonImg" @click="iniciarEdicion(item)"><img src="./img/editar.png" alt="Editar"></button>
+            <button class="botonImg" @click="iniciarBorrado(item)"><img src="./img/papelera.png" alt="Borrar"></button>
+          </div>
+            <div><span class="tiempo">{{item.tiempoTranscurrido}}</span></div>
+        </div>
+        <div v-if="item.borrando" class="confirmarBorradoContainer">
+          <button  @click="confirmarBorrado(item)">Confirmar Borrado</button>
+          <button  @click="cancelarBorrado(item)">Cancelar</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>

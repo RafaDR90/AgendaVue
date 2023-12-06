@@ -1,0 +1,242 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #272727;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+  
+#app {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #404040;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+  
+  h1 {
+    text-align: center;
+    color: #64b5f6;
+  }
+  
+  p {
+    margin: 0;
+  }
+  
+  input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease-in-out;
+  }
+  
+  button {
+    background-color:rgb(20, 13, 0);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: #e08b00;
+  }
+  
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .checkbox-container label {
+    margin-left: 5px;
+    font-size: 16px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .listaItems {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.nueva-nota {
+    animation: fadeIn 1s ease;
+}
+  
+  .botonesPrioridad button {
+    margin-right: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .botonPrio {
+    color: #fff;
+  }
+  
+  
+  
+  .botonesPrioridad button:nth-child(2) {
+    background-color: #c000002c; 
+    color: white;
+  }
+  
+  .botonesPrioridad button:nth-child(3) {
+    background-color: #00c0001f; 
+    color: white;
+
+  }
+  
+  .botonesPrioridad button:nth-child(4) {
+    background-color: #ffd90023; 
+    color: white;
+
+  }
+  .botonesPrioridad button.marcado.baja {
+    background-color: #ff0000;
+    color: black;
+    
+}
+
+.botonesPrioridad button.marcado.media {
+    background-color: #00c000;
+    color: black;
+    
+}
+
+.botonesPrioridad button.marcado.alta {
+    background-color: #ffd900;
+    color: black;
+    
+}
+  
+  .botonesEditarBorrar {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .botonesEditarBorrar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .botonImg img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .confirmarBorradoContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #555;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .confirmarBorradoContainer button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-right: 10px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .confirmarBorradoContainer button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .cancelarBorradoContainer button {
+    background-color: #64b5f6;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .cancelarBorradoContainer button:hover {
+    background-color: #42a5f5;
+  }
+  .borrarTodo {
+    background-color: transparent;
+    text-decoration: underline;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .borrarTodo:hover {
+    background-color: transparent;
+    text-decoration: underline;
+    color: #e08b00;    
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  .completado{
+    text-decoration:line-through green 3px;
+    
+  }
+  .tiempo{
+    color: rgb(155, 155, 155);
+    font-size: 13px;
+  }
+  .listaItems input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .listaItems input[type="checkbox"]:checked {
+    background-color: #00e013;
+    border-color: #00e013;
+  }
+  .tarea{
+    width: 50%;
+    font-size: 25px;
+  }
